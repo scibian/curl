@@ -1,3 +1,9 @@
+curl (7.38.0-4+deb8u4scibian1) jessie; urgency=medium
+
+  * Add curl and libcurl3 udebs
+
+ -- Yann Soubeyrand <yann-externe.soubeyrand@edf.fr>  Mon, 08 Aug 2016 09:30:37 +0200
+
 curl (7.38.0-4+deb8u4) jessie-security; urgency=high
 
   * Fix TLS session resumption client cert bypass as per CVE-2016-5419
