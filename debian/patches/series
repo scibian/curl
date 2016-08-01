@@ -1,0 +1,24 @@
+01_runtests_gdb.patch
+02_art_http_scripting.patch
+03_keep_symbols_compat.patch
+04_workaround_as_needed_bug.patch
+06_always-disable-valgrind.patch
+07_do-not-disable-debug-symbols.patch
+08_fix-spelling.patch
+09_libtoolize_check.patch
+10_fix-resolver.patch
+11_CVE-2014-3707.patch
+12_CVE-2014-8150.patch
+13_CVE-2015-3143.patch
+14_CVE-2015-3144.patch
+15_CVE-2015-3145.patch
+16_CVE-2015-3148.patch
+17_CVE-2015-3153.patch
+18_CVE-2016-0755.patch
+19_CVE-2016-5419.patch
+20_CVE-2016-5420.patch
+21_CVE-2016-5421.patch
+
+# do not add patches below
+90_gnutls.patch
+99_nss.patch
