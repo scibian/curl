@@ -1,3 +1,10 @@
+curl (7.52.1-5sci9u1) scibian9; urgency=low
+
+  * Add new libcurl3-udeb package.
+  * Add new curl-udeb package.
+
+ -- Scibian Packaging Team <packaging@scibian.org>  Thu, 7 Sep 2017 11:31:00 +0200
+
 curl (7.52.1-5) unstable; urgency=high
 
   * Fix TLS session resumption client cert bypass as per CVE-2017-7468
