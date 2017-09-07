@@ -23,7 +23,7 @@ CONFIGURE_ARGS = -- --disable-dependency-tracking		\
 	dh $@
 
 override_dh_auto_configure:
-	mkdir -p debian/build debian/build-gnutls debian/build-nss
+	mkdir -p debian/build debian/build-udeb debian/build-gnutls debian/build-nss
 	# pop the last patch (nss)
 	quilt pop
 	# pop the second last patch (gnutls)
@@ -31,6 +31,9 @@ override_dh_auto_configure:
 	# get the source without nss and gnutls patches
 	tar -cf - --exclude=debian/build* --exclude=.pc . \
 		| tar -xf - -C debian/build
+	# get udeb
+	tar -cf - --exclude=debian/build* --exclude=.pc . \
+		| tar -xf - -C debian/build-udeb
 	# push the second last patch which must be gnutls
 	quilt push
 	# get the source with gnutls patch applied
@@ -42,12 +45,16 @@ override_dh_auto_configure:
 	tar -cf - --exclude=debian/build* --exclude=.pc . \
 		| tar -xf - -C debian/build-nss
 	# run buildconf and make sure to copy the patched ltmain.sh
-	for flavour in build build-gnutls build-nss; do \
+	for flavour in build build-udeb build-gnutls build-nss; do \
 		(cd debian/$$flavour && ./buildconf && cp ../../ltmain.sh .) \
 	done
 	cd debian/build && dh_auto_configure ${CONFIGURE_ARGS}		\
 		--with-ca-path=/etc/ssl/certs				\
 		--with-ca-bundle=/etc/ssl/certs/ca-certificates.crt
+	cd debian/build-udeb && dh_auto_configure ${CONFIGURE_ARGS} \
+		--disable-ldap --with-ca-path=/etc/ssl/certs
+		--without gssapi --without-libssh2 --without-librtmp
+		--without-libidn
 	cd debian/build-gnutls &&  dh_auto_configure ${CONFIGURE_ARGS}	\
 		--with-ca-path=/etc/ssl/certs				\
 		--with-ca-bundle=/etc/ssl/certs/ca-certificates.crt	\
@@ -58,17 +65,15 @@ override_dh_auto_configure:
 
 override_dh_auto_build:
 	cd debian/build && dh_auto_build
+	cd debian/build-udeb && dh_auto_build
 	cd debian/build-gnutls && dh_auto_build
 	cd debian/build-nss && dh_auto_build
-
-override_dh_auto_test:
-	-cd debian/build && dh_auto_test
-	-cd debian/build-gnutls && dh_auto_test
-	-cd debian/build-nss && dh_auto_test
 
 override_dh_install:
 	${MAKE} -C debian/build					\
 		DESTDIR=$(shell pwd)/debian/tmp install
+	${MAKE} -C debian/build-udeb                    \
+		DESTDIR=$(shell pwd)/debian/tmp-udeb install
 	${MAKE} -C debian/build-gnutls				\
 		DESTDIR=$(shell pwd)/debian/tmp-gnutls install
 	${MAKE} -C debian/build-nss				\
@@ -77,6 +82,8 @@ override_dh_install:
 		--sourcedir=debian/tmp-gnutls
 	dh_install -plibcurl3-nss -plibcurl4-nss-dev		\
 		--sourcedir=debian/tmp-nss
+	dh_install -pcurl-udeb -plibcurl3-udeb                          \
+		--sourcedir=debian/tmp-udeb
 	dh_install -pcurl -plibcurl3 -plibcurl4-openssl-dev -plibcurl4-doc \
 		--sourcedir=debian/tmp
 	sed -i "/dependency_libs/ s/'.*'/''/" `find . -name '*.la'`
@@ -112,6 +119,9 @@ override_dh_strip:
 	dh_strip -plibcurl3 -plibcurl3-gnutls -plibcurl3-nss	\
 		--dbg-package=libcurl3-dbg
 	dh_strip --remaining-packages
+
+override_dh_makeshlibs:
+	dh_makeshlibs --add-udeb=libcurl3-udeb
 
 override_dh_auto_clean:
 	$(RM) -r debian/build* debian/tmp*
