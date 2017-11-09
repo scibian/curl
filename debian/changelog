@@ -1,3 +1,9 @@
+curl (7.52.1-5+deb9u2+sci9u1) scibian9; urgency=medium
+
+  * Debian update 
+
+ -- Scibian Packaging Team <packaging@scibian.org>  Thu, 09 Nov 2017 18:09:36 +0100
+
 curl (7.52.1-5+deb9u2) stretch-security; urgency=medium
 
   * Fix IMAP FETCH response out of bounds read as per CVE-2017-1000257
